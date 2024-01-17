@@ -10,7 +10,7 @@ public class DataSave2 {
     public void accept(Model model) {
         //Определим контекст
         ApplicationContext ctx = SpringApplication.run(DataSave2.class);
-        UsersRepo usersRepo = ctx.getBean(ru.courses2.Task4.repo.UsersRepo.class);
+        UsersRepo usersRepo = ctx.getBean(UsersRepo.class);
 
         //Запишим данные в таблицы
         for (Users user : model.data) {

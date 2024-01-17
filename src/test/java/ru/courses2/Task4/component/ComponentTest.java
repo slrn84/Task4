@@ -4,8 +4,12 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ApplicationContext;
+import ru.courses2.Task4.repo.DataSave2;
 import ru.courses2.Task4.repo.Logins;
 import ru.courses2.Task4.repo.Users;
+import ru.courses2.Task4.repo.UsersRepo;
 import ru.courses2.Task4.work.Model;
 
 import java.time.LocalDateTime;
@@ -114,6 +118,18 @@ public class ComponentTest{
     @Test
     @DisplayName("Запись в БД")
     public void DataSaveTest(){
-            //не понятно, надо ли тут что то тестировать, тк идет только запись в БД
+        //Определим контекст
+        ApplicationContext ctx = SpringApplication.run(DataSave2.class);
+        UsersRepo usersRepo = ctx.getBean(UsersRepo.class);
+        //Почистим таблицу
+        usersRepo.deleteAll();
+        //Запишим данные в таблицу
+        for (Users user : model.data) {
+            usersRepo.save(user);
+        }
+        //Поищем новые записи
+        usersRepo.findAll();
+
+        Assertions.assertTrue(usersRepo.count()>0);
     }
 }
