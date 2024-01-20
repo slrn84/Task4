@@ -1,6 +1,6 @@
 package ru.courses2.Task4.component;
 
-import org.springframework.context.annotation.Import;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import ru.courses2.Task4.annotation.LogTransformation;
 import ru.courses2.Task4.repo.Users;
@@ -9,7 +9,8 @@ import ru.courses2.Task4.work.Model;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Component("DataChangeFio")
+@Component
+@Order(1)
 @LogTransformation("C:/Users/79586/Documents/JAVA_COURSES/2 этап обучения java/Task4/log/write/DataChangeFio.txt")
 public class DataChangeFio implements Changer<Model> {
     @Override

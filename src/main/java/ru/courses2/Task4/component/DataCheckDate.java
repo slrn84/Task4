@@ -1,5 +1,6 @@
 package ru.courses2.Task4.component;
 
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import ru.courses2.Task4.annotation.LogTransformation;
 import ru.courses2.Task4.logging.Logging;
@@ -9,7 +10,9 @@ import ru.courses2.Task4.work.Model;
 
 import java.util.Iterator;
 
-@Component("DataCheckDate")
+//@Component("DataCheckDate")
+@Component
+@Order(2)
 @LogTransformation("C:/Users/79586/Documents/JAVA_COURSES/2 этап обучения java/Task4/log/write/DataCheckDate.txt")
 public class DataCheckDate implements Changer<Model> {
     @Override
