@@ -25,7 +25,7 @@ public class ApplicationContextTest {
 
     //проверим, что бины созданы и внедрены
     @Test
-    public void contextLoads() throws Exception {
+    public void contextLoads() {
         System.out.println(changerTest.toString());
         assertThat(dataReaderTest).isNotNull();
         assertThat(changerTest).isNotNull();

@@ -1,5 +1,4 @@
-FROM respo/jdk21
+FROM openjdk:21-ea-1-jdk-slim
 ARG JAR_FILE=*.jar
 COPY ${JAR_FILE} application.jar
-ENTRYPOINT ["java", "-jar", "application.jar"]
-EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "/application.jar"]

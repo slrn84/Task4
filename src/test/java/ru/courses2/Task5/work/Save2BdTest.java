@@ -6,28 +6,35 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.courses2.Task5.model.AgreementModel;
-import ru.courses2.Task5.model.ProductModel;
-import ru.courses2.Task5.service.SaveAgreements;
-import ru.courses2.Task5.service.SaveProduct;
-import ru.courses2.Task5.service.SaveProductRegister;
+import ru.courses2.Task5.model.entity.Agreements;
+import ru.courses2.Task5.model.entity.Product;
+import ru.courses2.Task5.model.entity.ProductRegister;
+import ru.courses2.Task5.model.request.AgreementModel;
+import ru.courses2.Task5.model.request.ProductModel;
+import ru.courses2.Task5.service.businessprocess.SetAccountDI;
+import ru.courses2.Task5.service.repository.ServiceRepoProduct;
+import ru.courses2.Task5.service.businessprocess.SaveAgreements;
+import ru.courses2.Task5.service.businessprocess.SaveProduct;
+import ru.courses2.Task5.service.businessprocess.SaveProductRegister;
+import ru.courses2.Task5.service.repository.ServiceRepoAgreements;
+import ru.courses2.Task5.service.repository.ServiceRepoProductRegister;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 @SpringBootTest
 public class Save2BdTest {
-    RepoProduct repoProduct;
-    RepoProductRegister repoProductRegister;
-    RepoAgreements repoAgreements;
-    Consumer<ProductRegister> setAccount;
+    ServiceRepoProduct repoProduct;
+    ServiceRepoProductRegister repoProductRegister;
+    ServiceRepoAgreements repoAgreements;
+    SetAccountDI<ProductRegister> setAccount;
     ProductModel productModel;
     Product product;
     @Autowired
-    public Save2BdTest(RepoProduct repoProduct, RepoProductRegister repoProductRegister, RepoAgreements repoAgreements, Consumer<ProductRegister> setAccount) throws ParseException {
+    public Save2BdTest(ServiceRepoProduct repoProduct, ServiceRepoProductRegister repoProductRegister
+            , ServiceRepoAgreements repoAgreements, SetAccountDI<ProductRegister> setAccount) throws ParseException {
         this.repoProduct = repoProduct;
         this.repoProductRegister = repoProductRegister;
         this.repoAgreements = repoAgreements;
@@ -78,7 +85,7 @@ public class Save2BdTest {
         //Подготовим связанный ЭП в БД
         new SaveProduct(repoProduct).accept(productModel, product);
         //Замокируем обращение к БД
-        RepoProduct mockRepo = Mockito.mock(RepoProduct.class);
+        ServiceRepoProduct mockRepo = Mockito.mock(ServiceRepoProduct.class);
         Mockito.when(mockRepo.findFirstById(Mockito.any())).thenReturn(product);
         //Почистим таблицу
         repoAgreements.deleteAll();

@@ -6,10 +6,19 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.web.client.HttpClientErrorException;
-import ru.courses2.Task5.model.AccountModel;
-import ru.courses2.Task5.model.AgreementModel;
-import ru.courses2.Task5.model.ProductModel;
-import ru.courses2.Task5.service.*;
+import ru.courses2.Task5.model.entity.Agreements;
+import ru.courses2.Task5.model.entity.Product;
+import ru.courses2.Task5.model.entity.ProductRegister;
+import ru.courses2.Task5.model.entity.ProductRegisterType;
+import ru.courses2.Task5.model.request.AccountModel;
+import ru.courses2.Task5.model.request.AgreementModel;
+import ru.courses2.Task5.model.request.ProductModel;
+import ru.courses2.Task5.model.response.ResponseRegister;
+import ru.courses2.Task5.service.repository.ServiceRepoProduct;
+import ru.courses2.Task5.service.businessprocess.*;
+import ru.courses2.Task5.service.repository.ServiceRepoAgreements;
+import ru.courses2.Task5.service.repository.ServiceRepoProductRegister;
+import ru.courses2.Task5.service.repository.ServiceRepoProductRegisterType;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -97,7 +106,7 @@ public class ServiceTest {
     @DisplayName("Дубль ЭП - не найден")
     public void CheckDuplicationProduct_TestGood() {
         //Замокируем обращение к БД
-        RepoProduct mockRepo = Mockito.mock(RepoProduct.class);
+        ServiceRepoProduct mockRepo = Mockito.mock(ServiceRepoProduct.class);
         Mockito.when(mockRepo.findFirstByNumber(Mockito.any())).thenReturn(null);
         //Выполним проверку
         Assertions.assertDoesNotThrow(
@@ -109,7 +118,7 @@ public class ServiceTest {
     @DisplayName("Дубль ЭП - найден")
     public void CheckDuplicationProduct_TestBad() {
         //Замокируем обращение к БД
-        RepoProduct mockRepo = Mockito.mock(RepoProduct.class);
+        ServiceRepoProduct mockRepo = Mockito.mock(ServiceRepoProduct.class);
         Mockito.when(mockRepo.findFirstByNumber(Mockito.any())).thenReturn(new Product());
         //Выполним проверку
         Assertions.assertThrows(HttpClientErrorException.class,
@@ -122,7 +131,7 @@ public class ServiceTest {
     @DisplayName("Дубль ДС - не найден")
     public void CheckDuplicationAgreement_TestGood() {
         //Замокируем обращение к БД
-        RepoAgreements mockRepo = Mockito.mock(RepoAgreements.class);
+        ServiceRepoAgreements mockRepo = Mockito.mock(ServiceRepoAgreements.class);
         Mockito.when(mockRepo.findFirstByNumber(Mockito.any())).thenReturn(null);
         //Выполним проверку
         Assertions.assertDoesNotThrow(
@@ -134,7 +143,7 @@ public class ServiceTest {
     @DisplayName("Дубль ДС - найден")
     public void CheckDuplicationAgreement_TestBad() {
         //Замокируем обращение к БД
-        RepoAgreements mockRepo = Mockito.mock(RepoAgreements.class);
+        ServiceRepoAgreements mockRepo = Mockito.mock(ServiceRepoAgreements.class);
         Mockito.when(mockRepo.findFirstByNumber(Mockito.any())).thenReturn(new Agreements());
         //Выполним проверку
         Assertions.assertThrows(HttpClientErrorException.class,
@@ -147,7 +156,7 @@ public class ServiceTest {
     @DisplayName("Дубль ПР - не найден")
     public void CheckDuplicationRegister_TestGood() {
         //Замокируем обращение к БД
-        RepoProductRegister mockRepo = Mockito.mock(RepoProductRegister.class);
+        ServiceRepoProductRegister mockRepo = Mockito.mock(ServiceRepoProductRegister.class);
         Mockito.when(mockRepo.findFirstByProduct_idAndType_value(Mockito.anyInt(), Mockito.any())).thenReturn(null);
         //Выполним проверку
         Assertions.assertDoesNotThrow(
@@ -159,7 +168,7 @@ public class ServiceTest {
     @DisplayName("Дубль ПР - найден")
     public void CheckDuplicationRegister_TestBad() {
         //Замокируем обращение к БД
-        RepoProductRegister mockRepo = Mockito.mock(RepoProductRegister.class);
+        ServiceRepoProductRegister mockRepo = Mockito.mock(ServiceRepoProductRegister.class);
         Mockito.when(mockRepo.findFirstByProduct_idAndType_value(Mockito.anyInt(), Mockito.any()))
                 .thenReturn(new ProductRegister(1,null,null,1,"1","1","1"));
         //Выполним проверку
@@ -173,7 +182,7 @@ public class ServiceTest {
     @DisplayName("Код продукта - не найден")
     public void CheckRegisterType_TestGood() {
         //Замокируем обращение к БД
-        RepoProductRegisterType mockRepo = Mockito.mock(RepoProductRegisterType.class);
+        ServiceRepoProductRegisterType mockRepo = Mockito.mock(ServiceRepoProductRegisterType.class);
         Mockito.when(mockRepo.findByClasscode_ValueAndAcctype_Value(Mockito.any(), Mockito.any())).thenReturn(null);
         //Выполним проверку
         Assertions.assertThrows(HttpClientErrorException.class,
@@ -185,7 +194,7 @@ public class ServiceTest {
     @DisplayName("Код продукта - найден")
     public void CheckRegisterType_TestBad() {
         //Замокируем обращение к БД
-        RepoProductRegisterType mockRepo = Mockito.mock(RepoProductRegisterType.class);
+        ServiceRepoProductRegisterType mockRepo = Mockito.mock(ServiceRepoProductRegisterType.class);
         ProductRegisterType productRegisterType1 = new ProductRegisterType(1, "03.012.002_47533_ComSoLd", "Хранение ДМ.", null, null);
         ProductRegisterType productRegisterType2 = new ProductRegisterType(2, "02.001.005_45343_CoDowFF", "Серебро. Выкуп.", null, null);
         Mockito.when(mockRepo.findByClasscode_ValueAndAcctype_Value(Mockito.any(), Mockito.any()))
@@ -202,7 +211,7 @@ public class ServiceTest {
     @DisplayName("Код продукта ПР - не найден")
     public void CheckCodeProductRegister_TestBad() {
         //Замокируем обращение к БД
-        RepoProduct mockRepo = Mockito.mock(RepoProduct.class);
+        ServiceRepoProduct mockRepo = Mockito.mock(ServiceRepoProduct.class);
         Mockito.when(mockRepo.findFirstByIdAndClassCode(Mockito.anyInt(), Mockito.any()))
                 .thenReturn(null);
         //Выполним проверку
@@ -215,7 +224,7 @@ public class ServiceTest {
     @DisplayName("Код продукта ПР - найден")
     public void CheckCodeProductRegister_TestGood() {
         //Замокируем обращение к БД
-        RepoProduct mockRepo = Mockito.mock(RepoProduct.class);
+        ServiceRepoProduct mockRepo = Mockito.mock(ServiceRepoProduct.class);
         Mockito.when(mockRepo.findFirstByIdAndClassCode(Mockito.anyInt(), Mockito.any()))
                 .thenReturn(new Product());
         //Выполним проверку

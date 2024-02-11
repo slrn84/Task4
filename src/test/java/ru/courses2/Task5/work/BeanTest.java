@@ -5,31 +5,39 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
-import ru.courses2.Task5.model.AccountModel;
-import ru.courses2.Task5.model.ProductModel;
+import ru.courses2.Task5.model.entity.Product;
+import ru.courses2.Task5.model.entity.ProductRegister;
+import ru.courses2.Task5.model.request.AccountModel;
+import ru.courses2.Task5.model.request.ProductModel;
+import ru.courses2.Task5.model.response.ResponseProduct;
+import ru.courses2.Task5.model.response.ResponseRegister;
+import ru.courses2.Task5.service.repository.ServiceRepoProduct;
+import ru.courses2.Task5.service.businessprocess.AccountDI;
+import ru.courses2.Task5.service.businessprocess.AgreementDI;
+import ru.courses2.Task5.service.businessprocess.ProductDI;
+import ru.courses2.Task5.service.businessprocess.ResponseProductDI;
 
 import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ComponentScan("ru.courses2.Task5.*")
 public class BeanTest {
-    List<BiConsumer<ProductModel, Product>> checkAndExecProduct;
-    Function<ProductModel, Product> execAgreement;
-    List<TerConsumer<AccountModel, ProductRegister, ResponseRegister>> checkAndExecAccount;
-    BiConsumer<Product, ResponseProduct> prepareResponseProduct;
-    RepoProduct repoProduct;
+
+    List<ProductDI<ProductModel, Product>> checkAndExecProduct;
+    AgreementDI<ProductModel, Product> execAgreement;
+    List<AccountDI<AccountModel, ProductRegister, ResponseRegister>> checkAndExecAccount;
+    ResponseProductDI<Product, ResponseProduct> prepareResponseProduct;
+    ServiceRepoProduct repoProduct;
 
     @Autowired
     public BeanTest(
-            List<BiConsumer<ProductModel, Product>> checkAndExecProduct
-            , Function<ProductModel, Product> execAgreement
-            , List<TerConsumer<AccountModel, ProductRegister, ResponseRegister>> checkAndExecAccount
-            , BiConsumer<Product, ResponseProduct> prepareResponseProduct
-            , RepoProduct repoProduct
+            List<ProductDI<ProductModel, Product>> checkAndExecProduct
+            , AgreementDI<ProductModel, Product> execAgreement
+            , List<AccountDI<AccountModel, ProductRegister, ResponseRegister>> checkAndExecAccount
+            , ResponseProductDI<Product, ResponseProduct> prepareResponseProduct
+            , ServiceRepoProduct repoProduct
     ) {
         this.checkAndExecProduct = checkAndExecProduct;
         this.execAgreement = execAgreement;
